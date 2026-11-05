@@ -85,14 +85,23 @@ class OverlayController:
     def set_custom_message(self, message: Optional[str]) -> bool:
         """Set a custom message to display"""
         try:
-            # Get current state
+            # Get current state. The GET payload also carries rendering-only
+            # data (the expanded team, conditions, ranking); PUT ignores the
+            # extras, so only the writable fields are sent back.
             response = requests.get(f"{self.api_base}/overlay/state")
-            state = response.json()
+            current = response.json()
 
-            # Update message
-            state["custom_message"] = message
+            state = {
+                "visible": current["visible"],
+                "current_team_id": current["current_team_id"],
+                "show_top_bar": current["show_top_bar"],
+                "show_team_info": current["show_team_info"],
+                "show_current_battery": current["show_current_battery"],
+                "show_takeoff_timer": current["show_takeoff_timer"],
+                "panel": current["panel"],
+                "custom_message": message,
+            }
 
-            # Send updated state
             response = requests.put(f"{self.api_base}/overlay/state", json=state)
             return response.status_code == 200
         except Exception as e:
@@ -115,7 +124,7 @@ def example_competition_flow():
     """
     controller = OverlayController()
 
-    print("🛩️  Aero Design Overlay Controller - Example Flow\n")
+    print("🛩️  AeroDesign Overlay Controller - Example Flow\n")
 
     # Get teams
     teams = controller.get_teams()
@@ -186,7 +195,7 @@ def interactive_mode():
     """
     controller = OverlayController()
 
-    print("🛩️  Aero Design Overlay Controller - Interactive Mode\n")
+    print("🛩️  AeroDesign Overlay Controller - Interactive Mode\n")
     print("Commands:")
     print("  list              - List all teams")
     print("  show <team_id>    - Show team on overlay")

@@ -4,27 +4,41 @@ A complete live broadcast overlay system designed for the brazilian AeroDesign c
 
 ## 🎯 Features
 
-- **Real-time Overlays**: Display team information, aircraft photos, flight results and more
-- **Web-based Control Panel**: Easy-to-use interface to control what appears on the stream
-- **OBS Integration**: Works seamlessly with OBS Browser Sources
-- **Mock API**: Pre-loaded with sample data for testing
-- **Customizable**: Show/hide different elements, add custom messages, etc
-- **Responsive Design**: Professional-looking overlays with smooth animations
-- **Web Components**: Modular, reusable components for easy team development
+- **Persistent status bar**: live clock, current weather, short forecast and the atmospheric numbers that decide payload capability
+- **Dynamic lower third**: the team on air, their standing, current battery and a countdown to their takeoff window
+- **Expandable panel**: open flight results, the standings or the upcoming teams on command
+- **Web-based control panel**: run the whole broadcast from one screen
+- **OBS integration**: works as a Browser Source, transparent background
+- **Web Components**: modular, reusable components for parallel team development
 
 ## 📋 What Gets Displayed
 
-The overlay can show:
-- **Team Information**: Team name, university, aircraft photo
-- **Current Battery**: Which round (battery) the team is currently flying
-- **Flight Results**: Results from previous batteries with validation status and scores
-- **Custom Messages**: Display important announcements or messages
+### Top bar (always on)
+
+| Element | Detail |
+| --- | --- |
+| Clock | Ticks locally, unaffected by network hiccups |
+| Weather | Condition, temperature, humidity, wind speed and direction, QNH |
+| Forecast | Next four hours with rain chance |
+| Atmosphere | Density altitude, air density and density relative to sea level |
+
+**Why density altitude matters:** the payload an aircraft can lift scales with air density. A field at 660 m on a 29 °C day behaves like 1420 m — roughly 87% of sea level density. The bar makes that visible to the commentators in real time.
+
+### Lower third (the team on air)
+
+Aircraft photo, team name, university, position in the standings, total score, current battery, and a countdown ring for the takeoff window. The ring escalates from cyan to amber to red as the window closes.
+
+### Expandable panel (on command)
+
+- **Results** — every battery flown, with status, payload and score
+- **Standings** — the top of the table, with the team on air highlighted
+- **Upcoming** — who flies next, and at what time
 
 ## 🏗️ Architecture
 
 ```
 ┌─────────────────┐
-│  Control Panel  │ ← You control the overlay here
+│  Control Panel  │ ← You control the broadcast here
 │  (Web Browser)  │
 └────────┬────────┘
          │
@@ -41,208 +55,207 @@ The overlay can show:
 └─────────────────┘
 ```
 
-### Web Components Architecture
+The overlay polls a single endpoint (`/api/overlay/state`) that returns everything it draws, keeping the OBS browser source to one request per poll.
 
-The project is built with **native Web Components** for better team collaboration:
+### Rendering model
 
-- **Backend Developer**: Works on `backend/main.py` (Python/FastAPI)
-- **UI/UX Developer**: Works on component styles and animations
-- **Frontend Logic Developer**: Works on component behavior and state management
+Components separate **structure** from **data**:
+
+- `template()` rebuilds only when `renderKey()` changes (a new team, a different panel)
+- `update()` runs on every poll and patches text, attributes and classes in place, doing nothing when a value is unchanged
+
+This matters because the overlay polls twice a second. Replacing the DOM on every poll would restart every CSS animation mid-flight.
+
+### Design system
+
+- `shared/styles/tokens.css` — palette, typography and motion curves as CSS custom properties. They inherit through shadow boundaries, so every component shares one vocabulary.
+- `shared/styles/theme.js` — keyframes and the glass panel surface.
+
+Motion rules: nothing blinks. Continuous loops run 2.4s or slower at low amplitude, and `prefers-reduced-motion` is respected.
+
+### Who works where
+
+- **Backend Developer**: `backend/main.py`, `backend/atmosphere.py`
+- **UI/UX Developer**: `shared/styles/`, component `styles()`
+- **Frontend Logic Developer**: component behaviour and state
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
 - Python 3.11 or higher
-- UV package manager (or pip)
+- UV package manager
 - OBS Studio (for broadcasting)
 - A modern web browser
 
 ### Installation
 
-1. **Clone the repository:**
-
 ```bash
 git clone git@github.com:rafaellehmkuhl/AeroDesign-Live-Streaming-System.git
-```
-
-2. **Install dependencies:**
-
-```bash
+cd AeroDesign-Live-Streaming-System
 ./dev.sh install
 ```
 
 Notice you need `uv` installed on your system, as it is used for package management on this repository.
 
-### Running the Application
-
-1. **Start the backend server:**
+### Running
 
 ```bash
-./dev.sh start
+./dev.sh start      # starts on http://localhost:8000
+./dev.sh test       # runs the test suite
 ```
 
-The server will start on `http://localhost:8000`
+Then open:
 
-2. **Open the Control Panel:**
+- **Control panel**: http://localhost:8000/control-panel/index.html
+- **Overlay preview**: http://localhost:8000/overlay/index.html?dev=1
 
-Open your web browser and go to:
-```
-http://localhost:8000/control-panel/index.html
-```
+The `?dev=1` flag draws the 1920x1080 boundary, the title-safe area and a backdrop so you can see the glass panels. **Never use it in OBS** — the production URL has no query string.
 
-There you can show and hide the overlays, decide which team will appear in the screen, etc.
-
-3. **Test the overlay in browser:**
-
-Before adding to OBS, you can see the overlay in any browser at:
-```
-http://localhost:8000/overlay/index.html
-```
+Under `?dev=1` the preview also plays `overlay/assets/sample.mp4` behind the overlay, so you can judge contrast against moving footage instead of a flat gradient. Drop your own recording in as that file, or point at another one with `?dev=1&sample=<url>`. The video is only ever given a source in dev mode, so the OBS browser source stays transparent and never fetches it.
 
 ## 🎥 Setting Up in OBS
 
-1. **Open OBS Studio**
+1. Add a **Browser Source** named "AeroDesign Overlay"
+2. **URL**: `http://localhost:8000/overlay/index.html`
+3. **Width** `1920`, **Height** `1080`
+4. Check "Shutdown source when not visible" and "Refresh browser when scene becomes active"
+5. Place it above your camera source in the layer list
 
-2. **Add a Browser Source:**
-   - Click the `+` button in the Sources panel
-   - Select "Browser"
-   - Name it "Aero Design Overlay"
+### Running OBS on a different machine
 
-3. **Configure the Browser Source:**
-   - **URL**: `http://localhost:8000/overlay/index.html`
-   - **Width**: `1920`
-   - **Height**: `1080`
-   - ✅ Check "Shutdown source when not visible"
-   - ✅ Check "Refresh browser when scene becomes active"
+The overlay resolves the API address rather than assuming localhost. If the backend runs on another machine, point the browser source at it:
 
-4. **Position the overlay:**
-   - The overlay is designed for 1920x1080 (Full HD)
-   - It should cover your entire video canvas
-   - Elements are positioned to not obstruct the center of the video
+```
+http://192.168.0.10:8000/overlay/index.html
+```
 
-5. **Layer it over your camera:**
-   - Make sure the Browser Source is above your camera/video source in the layers
+Or serve the page from anywhere and pass the API explicitly:
+
+```
+file:///path/to/overlay/index.html?api=http://192.168.0.10:8000
+```
 
 ## 🎮 Using the Control Panel
 
-### Quick Controls
-
-- **Show Overlay**: Make the overlay visible on stream
-- **Hide Overlay**: Hide all overlay elements
-- **Toggle Overlay**: Switch visibility on/off
-
-### Selecting a Team
-
-Click on any team card to:
-- Select that team
-- Automatically show their information on the overlay
-- Display their current battery and flight results
-
-### Overlay Settings
-
-- **Show Team Info**: Toggle the team information card
-- **Show Flight Results**: Toggle the flight results panel
-- **Show Current Battery**: Toggle the current battery badge
-- **Custom Message**: Add a custom message that appears at the top
-
-Click "Apply Settings" after making changes.
+| Section | What it does |
+| --- | --- |
+| **Status** | Whether you are on air, which team, which panel is open |
+| **Controles** | Show / hide / toggle, and "next team in the queue" (which also resets the takeoff window) |
+| **Janela de decolagem** | Start, pause, reset the countdown; pick a duration preset |
+| **Equipe no ar** | Click any team to put them on air |
+| **Painel expansível** | Choose which panel the overlay opens |
+| **Elementos do overlay** | Toggle individual elements and set the highlight message |
+| **Condições do campo** | Edit the readings; derived values recompute server-side |
 
 ## 📡 API Endpoints
 
-The backend provides a REST API that you can use programmatically:
+### Overlay control
 
-### Overlay Control
+- `GET /api/overlay/state` — everything the overlay draws (polled by OBS)
+- `PUT /api/overlay/state` — replace the overlay state
+- `POST /api/overlay/show?team_id=<id>` — show overlay, optionally switching team
+- `POST /api/overlay/hide` / `POST /api/overlay/toggle`
+- `POST /api/overlay/panel?panel=none|results|ranking|queue`
 
-- `GET /api/overlay/state` - Get current overlay state (polled by OBS)
-- `PUT /api/overlay/state` - Update overlay state
-- `POST /api/overlay/show?team_id=<id>` - Show overlay for specific team
-- `POST /api/overlay/hide` - Hide overlay
-- `POST /api/overlay/toggle` - Toggle overlay visibility
+### Teams and results
 
-### Team Management
+- `GET|POST /api/teams`, `GET|PUT|DELETE /api/teams/{team_id}`
+- `POST /api/teams/{team_id}/results` — add or correct a battery result
+- `PUT /api/teams/{team_id}/battery?battery_number=<n>`
+- `GET /api/ranking?limit=<n>` — standings from validated flights
 
-- `GET /api/teams` - Get all teams
-- `GET /api/teams/{team_id}` - Get specific team
-- `POST /api/teams` - Create new team
-- `PUT /api/teams/{team_id}` - Update team
-- `DELETE /api/teams/{team_id}` - Delete team
+### Conditions, queue and timer
 
-### Flight Results
+- `GET|PUT /api/conditions` — field readings; the response adds a `derived` block
+- `GET|PUT /api/queue`, `POST /api/queue/advance`
+- `GET /api/timer`, `POST /api/timer/start|pause|reset`, `PUT /api/timer`
 
-- `POST /api/teams/{team_id}/results` - Add flight result
-- `PUT /api/teams/{team_id}/battery` - Update current battery
-
-### Example API Usage
+### Example usage
 
 ```bash
-# Show overlay with team
+# Put a team on air and open their results
 curl -X POST "http://localhost:8000/api/overlay/show?team_id=team001"
+curl -X POST "http://localhost:8000/api/overlay/panel?panel=results"
 
-# Hide overlay
-curl -X POST "http://localhost:8000/api/overlay/hide"
+# Start their takeoff window
+curl -X POST "http://localhost:8000/api/timer/reset?duration_seconds=300"
+curl -X POST "http://localhost:8000/api/timer/start"
 
-# Get all teams
-curl "http://localhost:8000/api/teams"
-
-# Add flight result
+# Record a flight
 curl -X POST "http://localhost:8000/api/teams/team001/results" \
   -H "Content-Type: application/json" \
-  -d '{"battery_number": 4, "status": "validated", "score": 9.5, "notes": "Excellent performance"}'
+  -d '{"battery_number": 4, "status": "validated", "score": 88.4, "payload_kg": 9.7}'
+
+# Update the field conditions
+curl -X PUT "http://localhost:8000/api/conditions" \
+  -H "Content-Type: application/json" \
+  -d '{"temperature_c": 31.2, "humidity_pct": 62, "qnh_hpa": 1011,
+       "field_elevation_m": 660, "wind_speed_kmh": 18, "wind_direction_deg": 120,
+       "condition": "partly_cloudy", "forecast": []}'
 ```
 
-## 🧪 Mock Data
+**Note on read-modify-write:** `GET /api/overlay/state` returns rendering data (the expanded `team`, `conditions`, `ranking`) alongside the writable fields. `PUT` ignores the extras, and `current_team_id` is included precisely so a round trip preserves the selection.
 
-The system comes pre-loaded with some teams that participated in the 2025 competition.
-Each team has sample (fake) flight results you can use for testing.
+## 🧪 Data and tests
 
+The system ships pre-loaded with 20 teams from the 2025 Classe Regular competition, with sample (fake) flight results, a flight queue and field conditions.
+
+```bash
+./dev.sh test
+```
+
+Covers the atmospheric math (including hot-day and cold-day density altitude cases) and the API — standings, ties, enum validation, queue advance, timer pause semantics and the state round trip.
 
 ## 🔧 Configuration
 
-### Changing the Poll Interval
+### Poll interval
 
-In `overlay/index.html`, modify the `POLL_INTERVAL` constant:
+Set on the `<api-service>` element:
 
-```javascript
-const POLL_INTERVAL = 500; // milliseconds (default: 500ms)
+```html
+<api-service auto-poll poll-rate="500"></api-service>
 ```
 
-Lower values = more responsive, higher CPU usage
-Higher values = less responsive, lower CPU usage
+Lower values are more responsive and cost more CPU.
 
-### Changing the Port
+### Port
 
-In `backend/main.py`, modify the port in the `if __name__ == "__main__":` block:
-
-```python
-uvicorn.run(app, host="0.0.0.0", port=8000)  # Change 8000 to your port
-```
+Change it in `backend/main.py` (or pass `--port` to uvicorn). The overlay and control panel follow the origin they were served from, so nothing else needs updating.
 
 ## 📁 Project Structure
 
 ```
-aero-tv-transmission-overlayer/
+AeroDesign-Live-Streaming-System/
 ├── backend/
-│   ├── main.py              # FastAPI backend server
-│   └── mock_data.json       # Team data
+│   ├── main.py                  # FastAPI server and models
+│   ├── atmosphere.py            # Air density and density altitude
+│   ├── test_atmosphere.py       # Tests for the math
+│   ├── test_api.py              # Tests for the endpoints
+│   └── mock_data.json           # Teams, queue and field conditions
 ├── shared/
+│   ├── styles/
+│   │   ├── tokens.css           # Palette, typography, motion
+│   │   └── theme.js             # Keyframes and panel surface
 │   └── components/
-│       ├── base-component.js    # Base class for all components
-│       └── api-service.js       # Centralized API communication
+│       ├── base-component.js    # Structure/data split, patch helpers
+│       └── api-service.js       # API access and polling
 ├── overlay/
-│   ├── index.html               # OBS browser source overlay
+│   ├── index.html               # OBS browser source
 │   └── components/
-│       ├── team-info-card.js    # Team info display component
-│       ├── flight-results.js    # Flight results component
-│       └── custom-message.js    # Custom message component
+│       ├── status-bar.js        # Clock, weather, atmosphere
+│       ├── team-lower-third.js  # Team on air + countdown
+│       ├── info-panel.js        # Results / standings / upcoming
+│       └── custom-message.js    # Announcement banner
 ├── control-panel/
-│   ├── index.html               # Control panel interface
+│   ├── index.html               # Operator interface
 │   └── components/
-│       ├── status-indicator.js  # Status display component
-│       ├── team-card.js         # Team selection card component
-│       ├── control-buttons.js   # Quick action buttons
-│       └── notification-toast.js # Notification system
-├── pyproject.toml               # Python dependencies (UV)
+│       ├── status-indicator.js
+│       ├── team-card.js
+│       ├── control-buttons.js
+│       ├── timer-control.js
+│       └── notification-toast.js
+├── pyproject.toml
 └── README.md
 ```
 
@@ -251,19 +264,24 @@ aero-tv-transmission-overlayer/
 ### Overlay not updating in OBS
 
 1. Make sure the backend is running
-2. Check the OBS browser source URL is correct
-3. Try refreshing the browser source (right-click → Properties → Refresh cache of current page)
+2. Check the browser source URL
+3. Right-click the source → Properties → Refresh cache of current page
 
-### CORS Errors
+### The red dashed frame is showing on air
 
-The backend has CORS enabled for all origins in development. If you need to restrict it, modify the `CORSMiddleware` configuration in `backend/main.py`.
+You are using `?dev=1`. Remove it from the browser source URL.
 
-### Port Already in Use
+### Fonts look different on the field machine
 
-If port 8000 is already in use:
-1. Change the port in `backend/main.py`
-2. Update the API_URL in `overlay/index.html`
-3. Update the API_BASE in `control-panel/index.html`
+The display fonts load from Google Fonts and fall back to a system stack when there is no connectivity. The layout is sized so nothing breaks either way.
+
+### Nothing persists after a restart
+
+State is held in memory. Restarting the server reloads `backend/mock_data.json` and discards live edits.
+
+### CORS errors
+
+CORS is open for all origins in development. Restrict it in the `CORSMiddleware` configuration in `backend/main.py`.
 
 ## 🤝 Contributing
 
@@ -275,9 +293,8 @@ This project is open source and available for use in your competitions.
 
 ## 🎓 Credits
 
-Built for the Aero Design competition with ❤️
+Built for the AeroDesign competition with ❤️
 
 ---
 
 **Need help?** Check the API documentation at `http://localhost:8000/docs` (FastAPI automatic docs)
-

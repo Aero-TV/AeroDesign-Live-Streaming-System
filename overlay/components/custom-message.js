@@ -1,90 +1,108 @@
+import BaseComponent from '../../shared/components/base-component.js';
+import { THEME } from '../../shared/styles/theme.js';
+
+/**
+ * Announcement banner, centred below the status bar.
+ *
+ * Sits above the video's upper third where it reads clearly without covering
+ * the aircraft, which stays in frame centre during a flight.
+ */
 class CustomMessage extends BaseComponent {
-  template() {
-    const { message } = this._state;
-
-    if (!message) {
-      return '<div></div>';
-    }
-
-    return `
-      <div class="custom-message">
-        <div class="custom-message-text">${message}</div>
-      </div>
-    `;
-  }
-
   constructor() {
     super();
-    this.setState({
-      visible: false,
-      message: ''
-    });
+    this._state = { message: '' };
   }
 
-  static get observedAttributes() {
-    return ['visible', 'message'];
+  connectedCallback() {
+    this.render();
   }
 
-  attributeChangedCallback(name, oldValue, newValue) {
-    if (name === 'visible') {
-      this.setState({ visible: newValue !== null });
-    } else if (name === 'message') {
-      this.setState({ message: newValue || '' });
-    }
-  }
-
-  show(message) {
-    this.setState({
-      visible: true,
-      message: message || ''
-    });
-    this.classList.add('visible');
-  }
-
-  hide() {
-    this.setState({ visible: false });
-    this.classList.remove('visible');
-  }
-
-  updateMessage(message) {
-    this.setState({ message: message || '' });
+  /** Rebuild on a new message so the entrance animation replays. */
+  renderKey() {
+    return this._state.message || 'empty';
   }
 
   styles() {
     return `
+      ${THEME}
+
       :host {
-        display: block;
         position: absolute;
-        top: 40px;
-        left: 50%;
-        transform: translateX(-50%) translateY(-100%);
+        top: 122px;
+        left: 0;
+        right: 0;
+        z-index: 850;
+        display: flex;
+        justify-content: center;
         opacity: 0;
-        transition: all 0.5s ease;
-        max-width: 80%;
+        transform: translateY(-16px);
+        transition:
+          opacity var(--exit) var(--ease-in),
+          transform var(--exit) var(--ease-in);
+        pointer-events: none;
       }
 
-      :host(.visible) {
+      :host(.is-visible) {
         opacity: 1;
-        transform: translateX(-50%) translateY(0);
+        transform: translateY(0);
+        transition:
+          opacity var(--enter) var(--ease-out),
+          transform var(--enter) var(--ease-out);
       }
 
-      .custom-message {
-        background: linear-gradient(135deg, rgba(255, 170, 0, 0.95), rgba(255, 136, 0, 0.95));
-        border-radius: 10px;
-        padding: 15px 30px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-        border: 2px solid rgba(255, 255, 255, 0.3);
+      .banner {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        max-width: 1100px;
+        padding: 14px 28px 14px 22px;
+        animation: rise-in var(--enter) var(--ease-out) both;
       }
 
-      .custom-message-text {
-        font-size: 24px;
-        font-weight: bold;
-        color: white;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        text-align: center;
+      .mark {
+        width: 4px;
+        align-self: stretch;
+        min-height: 26px;
+        border-radius: 2px;
+        background: var(--accent-gradient);
+        box-shadow: 0 0 14px var(--accent-glow);
+        flex: none;
+      }
+
+      .text {
+        font-family: var(--font-display);
+        font-size: 27px;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+        line-height: 1.15;
+        text-shadow: 0 2px 14px rgba(0, 0, 0, 0.5);
       }
     `;
+  }
+
+  template() {
+    if (!this._state.message) return '<div></div>';
+    return `
+      <div class="banner panel">
+        <span class="mark"></span>
+        <span class="text" id="text"></span>
+      </div>
+    `;
+  }
+
+  update() {
+    this.setText('#text', this._state.message);
+  }
+
+  show(message) {
+    this.setState({ message });
+    this.setVisible(!!message);
+  }
+
+  hide() {
+    this.setVisible(false);
   }
 }
 
 customElements.define('custom-message', CustomMessage);
+export default CustomMessage;

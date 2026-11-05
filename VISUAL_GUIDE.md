@@ -68,7 +68,7 @@ This document shows what each component of the system looks like and how they wo
 ### Overview
 ```
 ┌──────────────────────────────────────────────────────┐
-│  🛩️ Aero Design - Control Panel                      │
+│  🛩️ AeroDesign - Control Panel                       │
 │  Controle os overlays da transmissão ao vivo         │
 │  🔗 Abrir Overlay (para OBS)                          │
 ├──────────────────────────────────────────────────────┤

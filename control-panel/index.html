@@ -2,385 +2,908 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aero Design - Control Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AeroDesign - Painel de Controle</title>
+
+    <link rel="stylesheet" href="../shared/styles/tokens.css">
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 20px;
+            font-family: var(--font-body);
+            color: var(--text);
+            background:
+                radial-gradient(1100px 620px at 12% -8%, #16304d 0%, transparent 62%),
+                radial-gradient(900px 520px at 92% 4%, #1a2a4a 0%, transparent 58%),
+                #070b14;
+            padding: 28px 34px 60px;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .header {
-            background: white;
-            border-radius: 10px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .header h1 {
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .header p {
-            color: #666;
-            font-size: 14px;
-        }
-
-        .card {
-            background: white;
-            border-radius: 10px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .card h2 {
-            color: #333;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #667eea;
-        }
-
-        .checkbox-group {
+        header {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 16px;
+            margin-bottom: 26px;
         }
 
-        .checkbox-group input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
+        header .mark {
+            width: 5px;
+            height: 38px;
+            border-radius: 3px;
+            background: var(--accent-gradient);
+            box-shadow: 0 0 18px var(--accent-glow);
         }
 
-        .checkbox-group label {
-            margin: 0;
-            cursor: pointer;
-            color: #333;
+        h1 {
+            font-family: var(--font-display);
+            font-size: 34px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        header .sub { font-size: 13px; color: var(--text-muted); }
+
+        .layout {
+            display: grid;
+            grid-template-columns: minmax(320px, 380px) minmax(360px, 1fr) minmax(320px, 400px);
+            gap: 20px;
+            align-items: start;
+        }
+
+        @media (max-width: 1180px) {
+            .layout { grid-template-columns: 1fr; }
+        }
+
+        .col { display: flex; flex-direction: column; gap: 20px; }
+
+        section {
+            padding: 20px 22px 22px;
+            border-radius: var(--radius);
+            background: var(--surface);
+            border: 1px solid var(--surface-line);
+            backdrop-filter: blur(var(--blur));
+            box-shadow: var(--shadow);
+        }
+
+        h2 {
+            font-family: var(--font-display);
+            font-size: 18px;
             font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text);
+            margin-bottom: 16px;
+            padding-bottom: 11px;
+            border-bottom: 1px solid var(--surface-line);
         }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
+        .label {
+            font-size: 11px;
             font-weight: 600;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--text-dim);
         }
 
-        .form-group input {
+        /* --- Panel mode selector ------------------------------------------ */
+        .modes { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+
+        .mode {
+            padding: 13px 12px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--surface-line);
+            background: var(--surface-soft);
+            color: var(--text-muted);
+            font-family: var(--font-body);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 180ms var(--ease-out), background 220ms var(--ease-out),
+                        border-color 220ms var(--ease-out), color 220ms var(--ease-out);
+        }
+
+        .mode:hover { border-color: rgba(34, 211, 238, 0.4); color: var(--text); }
+        .mode:active { transform: scale(0.97); }
+
+        .mode.active {
+            border-color: var(--accent);
+            background: rgba(34, 211, 238, 0.14);
+            color: var(--accent);
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.14);
+        }
+
+        /* --- Switches ------------------------------------------------------ */
+        .switch-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 11px 0;
+            border-bottom: 1px solid rgba(148, 175, 214, 0.08);
+        }
+
+        .switch-row:last-of-type { border-bottom: none; }
+
+        .switch-row span { font-size: 14px; }
+
+        .switch { position: relative; width: 44px; height: 24px; flex: none; }
+
+        .switch input { opacity: 0; width: 0; height: 0; }
+
+        .slider {
+            position: absolute;
+            inset: 0;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.12);
+            cursor: pointer;
+            transition: background 280ms var(--ease-out);
+        }
+
+        .slider::before {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            left: 3px;
+            top: 3px;
+            border-radius: 50%;
+            background: #fff;
+            transition: transform 300ms var(--ease-out);
+        }
+
+        .switch input:checked + .slider { background: var(--accent); }
+        .switch input:checked + .slider::before { transform: translateX(20px); }
+
+        /* --- Inputs -------------------------------------------------------- */
+        .field { display: flex; flex-direction: column; gap: 7px; margin-bottom: 13px; }
+
+        input[type="text"], input[type="number"], select {
             width: 100%;
-            padding: 10px;
-            border: 2px solid #e0e0e0;
-            border-radius: 6px;
+            padding: 11px 13px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--surface-line);
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text);
+            font-family: var(--font-body);
             font-size: 14px;
-            transition: border-color 0.3s;
-            font-family: inherit;
+            transition: border-color 220ms var(--ease-out), background 220ms var(--ease-out);
         }
 
-        .form-group input:focus {
+        input:focus, select:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--accent);
+            background: rgba(34, 211, 238, 0.07);
         }
 
-        .button {
-            padding: 12px 24px;
+        select option { background: #0d1524; }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+
+        .btn {
+            width: 100%;
+            padding: 13px 16px;
+            border-radius: var(--radius-sm);
             border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: 600;
+            background: var(--accent-gradient);
+            color: #05121C;
+            font-family: var(--font-body);
+            font-size: 14px;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s;
-            background: #667eea;
-            color: white;
-            font-family: inherit;
+            transition: transform 180ms var(--ease-out), filter 220ms var(--ease-out);
         }
 
-        .button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        .btn:hover { filter: brightness(1.08); }
+        .btn:active { transform: scale(0.98); }
+
+        .btn.ghost {
+            background: var(--surface-soft);
+            border: 1px solid var(--surface-line);
+            color: var(--text);
         }
 
-        .button:active {
-            transform: translateY(0);
-        }
+        .btn.ghost:hover { background: rgba(34, 211, 238, 0.1); }
 
+        /* --- Team grid ----------------------------------------------------- */
+        /*
+         * Every team on screen at once, no scrolling: during a flight window the
+         * operator cannot afford to hunt for a card. auto-fill rather than a
+         * fixed column count, so the grid gives back columns as the panel
+         * narrows instead of overflowing.
+         */
         .team-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(236px, 1fr));
+            gap: 6px;
         }
 
-        .preview-link {
-            display: inline-block;
-            margin-top: 10px;
-            color: #667eea;
+        .derived {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 11px;
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid var(--surface-line);
+        }
+
+        .derived div { display: flex; flex-direction: column; gap: 4px; }
+
+        .derived b {
+            font-family: var(--font-display);
+            font-size: 21px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .hint { font-size: 12px; color: var(--text-dim); margin-top: 10px; line-height: 1.5; }
+
+        .links { display: flex; gap: 10px; margin-top: 12px; }
+
+        .links a {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--surface-line);
+            background: var(--surface-soft);
+            color: var(--text-muted);
             text-decoration: none;
+            font-size: 13px;
             font-weight: 600;
+            transition: color 220ms var(--ease-out), border-color 220ms var(--ease-out);
         }
 
-        .preview-link:hover {
-            text-decoration: underline;
-        }
+        .links a:hover { color: var(--accent); border-color: rgba(34, 211, 238, 0.4); }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <h1>🛩️ Aero Design - Control Panel</h1>
-            <p>Controle os overlays da transmissão ao vivo</p>
-            <a href="/overlay/index.html" target="_blank" class="preview-link">🔗 Abrir Overlay (para OBS)</a>
+    <header>
+        <span class="mark"></span>
+        <div>
+            <h1>AeroDesign · Controle</h1>
+            <div class="sub">Operação da transmissão ao vivo</div>
+        </div>
+    </header>
+
+    <div class="layout">
+        <!-- ---------------- Left: what is on air, and the main actions --- -->
+        <div class="col">
+            <section>
+                <h2>Status</h2>
+                <status-indicator id="statusIndicator"></status-indicator>
+                <div class="links">
+                    <a href="../overlay/index.html" target="_blank">Abrir overlay</a>
+                    <a href="../overlay/index.html?dev=1" target="_blank">Prévia (com guias)</a>
+                </div>
+            </section>
+
+            <section>
+                <h2>Controles</h2>
+                <control-buttons id="controlButtons"></control-buttons>
+            </section>
+
+            <section>
+                <h2>Estágio da equipe</h2>
+                <stage-control id="stageControl"></stage-control>
+            </section>
+
+            <section>
+                <h2>Janela de decolagem</h2>
+                <timer-control id="timerControl"></timer-control>
+            </section>
         </div>
 
-        <!-- Current Status -->
-        <div class="card">
-            <h2>Status Atual</h2>
-            <status-indicator id="statusIndicator"></status-indicator>
+        <!-- ---------------- Middle: team selection ---------------------- -->
+        <div class="col">
+            <section>
+                <h2>Andamento</h2>
+                <stage-board id="stageBoard"></stage-board>
+                <p class="hint">
+                    Use as setas do chip para mover a equipe uma etapa: ← volta,
+                    → avança. Clicar no nome só aponta os controles de estágio
+                    para ela. O que está no ar não muda. Validar exige a nota,
+                    então essa etapa é feita no controle de estágio.
+                </p>
+            </section>
+
+            <section>
+                <h2>Equipe no ar</h2>
+                <div class="team-list" id="teamList"></div>
+            </section>
         </div>
 
-        <!-- Quick Controls -->
-        <div class="card">
-            <h2>Controles Rápidos</h2>
-            <control-buttons id="controlButtons"></control-buttons>
-        </div>
+        <!-- ---------------- Right: what the overlay shows --------------- -->
+        <div class="col">
+            <section>
+                <h2>Painel expansível</h2>
+                <div class="modes">
+                    <button class="mode" data-panel="none">Fechado</button>
+                    <button class="mode" data-panel="results">Resultados</button>
+                    <button class="mode" data-panel="ranking">Classificação</button>
+                    <button class="mode" data-panel="queue">Próximas</button>
+                    <button class="mode" data-panel="board">Board</button>
+                </div>
+                <p class="hint">
+                    Abre acima do card da equipe. Trocar de modo refaz a animação de entrada.
+                </p>
+                <p class="hint">
+                    <strong>Board</strong> ocupa a tela inteira com a classificação completa e
+                    vira as posições que mudaram desde a última vez que foi fechado.
+                </p>
+            </section>
 
-        <!-- Overlay Settings -->
-        <div class="card">
-            <h2>Configurações do Overlay</h2>
+            <section>
+                <h2>Elementos do overlay</h2>
 
-            <div class="checkbox-group">
-                <input type="checkbox" id="showTeamInfo" checked>
-                <label for="showTeamInfo">Mostrar Informações da Equipe</label>
-            </div>
+                <div class="switch-row">
+                    <span>Barra superior</span>
+                    <label class="switch">
+                        <input type="checkbox" id="showTopBar" checked><span class="slider"></span>
+                    </label>
+                </div>
+                <div class="switch-row">
+                    <span>Card da equipe</span>
+                    <label class="switch">
+                        <input type="checkbox" id="showTeamInfo" checked><span class="slider"></span>
+                    </label>
+                </div>
+                <div class="switch-row">
+                    <span>Bateria atual</span>
+                    <label class="switch">
+                        <input type="checkbox" id="showCurrentBattery" checked><span class="slider"></span>
+                    </label>
+                </div>
+                <div class="switch-row">
+                    <span>Cronômetro de decolagem</span>
+                    <label class="switch">
+                        <input type="checkbox" id="showTakeoffTimer" checked><span class="slider"></span>
+                    </label>
+                </div>
 
-            <div class="checkbox-group">
-                <input type="checkbox" id="showFlightResults" checked>
-                <label for="showFlightResults">Mostrar Resultados dos Voos</label>
-            </div>
+                <div class="field" style="margin-top:16px">
+                    <label class="label" for="customMessage">Mensagem em destaque</label>
+                    <input type="text" id="customMessage" placeholder="Ex.: Bateria 4 em andamento">
+                </div>
 
-            <div class="checkbox-group">
-                <input type="checkbox" id="showCurrentBattery" checked>
-                <label for="showCurrentBattery">Mostrar Bateria Atual</label>
-            </div>
+                <button class="btn" id="applySettings">Aplicar mensagem</button>
+            </section>
 
-            <div class="form-group">
-                <label for="customMessage">Mensagem Personalizada</label>
-                <input type="text" id="customMessage" placeholder="Digite uma mensagem opcional...">
-            </div>
+            <section>
+                <h2>Condições do campo</h2>
 
-            <button class="button" id="applySettings">💾 Aplicar Configurações</button>
-        </div>
+                <div class="grid-2">
+                    <div class="field">
+                        <label class="label" for="temperature">Temperatura (°C)</label>
+                        <input type="number" id="temperature" step="0.1">
+                    </div>
+                    <div class="field">
+                        <label class="label" for="humidity">Umidade (%)</label>
+                        <input type="number" id="humidity" step="1" min="0" max="100">
+                    </div>
+                    <div class="field">
+                        <label class="label" for="qnh">QNH (hPa)</label>
+                        <input type="number" id="qnh" step="0.1">
+                    </div>
+                    <div class="field">
+                        <label class="label" for="elevation">Elevação (m)</label>
+                        <input type="number" id="elevation" step="1">
+                    </div>
+                    <div class="field">
+                        <label class="label" for="windSpeed">Vento (km/h)</label>
+                        <input type="number" id="windSpeed" step="1">
+                    </div>
+                    <div class="field">
+                        <label class="label" for="windDir">Direção (°)</label>
+                        <input type="number" id="windDir" step="5" min="0" max="360">
+                    </div>
+                </div>
 
-        <!-- Team Selection -->
-        <div class="card">
-            <h2>Selecionar Equipe</h2>
-            <div class="team-list" id="teamList">
-                <!-- Team cards will be loaded here -->
-            </div>
+                <div class="field">
+                    <label class="label" for="condition">Condição</label>
+                    <select id="condition">
+                        <option value="clear">Céu limpo</option>
+                        <option value="partly_cloudy">Parcialmente nublado</option>
+                        <option value="cloudy">Nublado</option>
+                        <option value="rain">Chuva</option>
+                        <option value="storm">Tempestade</option>
+                        <option value="wind">Ventos fortes</option>
+                    </select>
+                </div>
+
+                <button class="btn ghost" id="applyConditions">Atualizar condições</button>
+
+                <!-- Recomputed by the server from the readings above. -->
+                <div class="derived">
+                    <div>
+                        <span class="label">Altitude-densidade</span>
+                        <b><span id="dDa">--</span> m</b>
+                    </div>
+                    <div>
+                        <span class="label">Densidade do ar</span>
+                        <b><span id="dRho">--</span></b>
+                    </div>
+                    <div>
+                        <span class="label">Densidade relativa</span>
+                        <b><span id="dRel">--</span>%</b>
+                    </div>
+                    <div>
+                        <span class="label">Ponto de orvalho</span>
+                        <b><span id="dDew">--</span> °C</b>
+                    </div>
+                </div>
+            </section>
         </div>
     </div>
 
-    <!-- Notification Toast -->
+    <stage-prompt id="stagePrompt"></stage-prompt>
     <notification-toast id="notificationToast"></notification-toast>
+    <api-service auto-poll poll-rate="1000"></api-service>
 
-    <!-- API Service -->
-    <api-service id="apiService"></api-service>
-
-    <!-- Load Base Component First -->
-    <script type="module" src="../shared/components/base-component.js"></script>
-
-    <!-- Load API Service -->
     <script type="module" src="../shared/components/api-service.js"></script>
-
-    <!-- Load Control Panel Components -->
     <script type="module" src="./components/status-indicator.js"></script>
     <script type="module" src="./components/team-card.js"></script>
     <script type="module" src="./components/control-buttons.js"></script>
+    <script type="module" src="./components/timer-control.js"></script>
+    <script type="module" src="./components/stage-control.js"></script>
+    <script type="module" src="./components/stage-board.js"></script>
+    <script type="module" src="./components/stage-prompt.js"></script>
     <script type="module" src="./components/notification-toast.js"></script>
 
-    <!-- Application Logic -->
     <script type="module">
-        // State
-        let currentState = null;
-        let teams = [];
+        import { STAGE_FLOW, STAGE_BACK, TERMINAL_STAGES, stageLabel } from '../shared/stages.js';
 
-        // DOM references
         const statusIndicator = document.getElementById('statusIndicator');
         const controlButtons = document.getElementById('controlButtons');
+        const timerControl = document.getElementById('timerControl');
+        const stageControl = document.getElementById('stageControl');
+        const stageBoard = document.getElementById('stageBoard');
+        const stagePrompt = document.getElementById('stagePrompt');
         const teamList = document.getElementById('teamList');
-        const notificationToast = document.getElementById('notificationToast');
+        const toast = document.getElementById('notificationToast');
 
-        // Initialize
-        async function init() {
-            await loadTeams();
-            await loadCurrentState();
-            setInterval(loadCurrentState, 2000); // Refresh every 2 seconds
+        let state = null;
+        let teams = [];
+        let cards = new Map();
+        // The polled state carries only the top of the standings, since that is
+        // all the overlay draws. The operator needs every team's position, so
+        // the full table is fetched separately and refreshed on its own timer.
+        let fullRanking = new Map();
+        // The team the stage controls act on. It follows whoever is on air by
+        // default, but the board can point it somewhere else: the whole reason
+        // stages exist is that several teams are in different places at once,
+        // so marking one team as inspecting must not disturb the one flying.
+        let selectedTeamId = null;
+
+        // While the operator is typing, incoming polls must not overwrite the
+        // form under their cursor.
+        let editingSettings = false;
+        let editingConditions = false;
+
+        const settingsInputs = ['showTopBar', 'showTeamInfo', 'showCurrentBattery',
+                                'showTakeoffTimer', 'customMessage'];
+        const conditionInputs = ['temperature', 'humidity', 'qnh', 'elevation',
+                                 'windSpeed', 'windDir', 'condition'];
+
+        function guardEditing(ids, setFlag) {
+            ids.forEach((id) => {
+                const el = document.getElementById(id);
+                el.addEventListener('focus', () => setFlag(true));
+                el.addEventListener('blur', () => setTimeout(() => setFlag(false), 400));
+            });
         }
 
-        // Load teams from API
+        guardEditing(settingsInputs, (v) => { editingSettings = v; });
+        guardEditing(conditionInputs, (v) => { editingConditions = v; });
+
+        // --- Incoming state ---------------------------------------------
+
+        document.addEventListener('state-updated', (event) => {
+            state = event.detail;
+            statusIndicator.updateStatus(state.visible, state.team, state.panel);
+            controlButtons.setVisibleState(state.visible);
+            timerControl.syncTimer(state.timer);
+            updateModeButtons(state.panel);
+
+            if (!selectedTeamId && state.team) selectedTeamId = state.team.id;
+            updateCards();
+            updateStageControl();
+            if (!editingSettings) fillSettings(state);
+            if (!editingConditions) fillConditions(state.conditions);
+            fillDerived(state.conditions);
+        });
+
+        document.addEventListener('connection-changed', (event) => {
+            statusIndicator.setOnline(event.detail.online);
+            if (!event.detail.online) toast.show('Conexão perdida com o servidor', 'error');
+        });
+
+        // --- Teams --------------------------------------------------------
+
         async function loadTeams() {
             try {
                 teams = await window.aeroApi.getTeams();
                 renderTeams();
             } catch (error) {
-                notificationToast.show('Erro ao carregar equipes', 'error');
-                console.error(error);
+                toast.show('Erro ao carregar equipes', 'error');
             }
         }
 
-        // Load current state
-        async function loadCurrentState() {
+        /**
+         * Pull fresh team data without tearing the list down.
+         *
+         * Stages change constantly, and a card's renderKey is its team id, so
+         * handing it a new object patches the values in place and leaves the
+         * DOM, scroll position and hover state alone.
+         */
+        async function refreshTeams() {
             try {
-                currentState = await window.aeroApi.getOverlayState();
-                updateStatusDisplay();
-                updateFormFromState();
-                updateTeamCards();
-            } catch (error) {
-                console.error('Error loading state:', error);
-            }
-        }
+                const fresh = await window.aeroApi.getTeams();
+                const sameSet = fresh.length === teams.length
+                    && fresh.every((t, i) => t.id === teams[i].id);
 
-        // Render teams
-        function renderTeams() {
-            teamList.innerHTML = '';
-
-            teams.forEach(team => {
-                const card = document.createElement('team-card');
-                card.setTeam(team);
-
-                // Set active state if this is the current team
-                if (currentState && currentState.team && currentState.team.id === team.id) {
-                    card.setActive(true);
+                teams = fresh;
+                if (!sameSet) {
+                    renderTeams();
+                    return;
                 }
 
-                // Listen for team selection
-                card.addEventListener('team-selected', async (e) => {
-                    await selectTeam(e.detail.teamId);
+                teams.forEach((team) => {
+                    const card = cards.get(team.id);
+                    if (card) card.setTeam(team);
                 });
+                updateStageControl();
+            } catch (error) {
+                // Transient; the next tick retries.
+            }
+        }
 
+        async function loadStageBoard() {
+            try {
+                const board = await window.aeroApi.getStages();
+                stageBoard.setBoard(board, state && state.team ? state.team.id : null);
+            } catch (error) {
+                // Transient; the next tick retries.
+            }
+        }
+
+        function updateStageControl() {
+            const team = teams.find((t) => t.id === selectedTeamId) || null;
+            stageControl.setTeam(team);
+        }
+
+        function renderTeams() {
+            teamList.innerHTML = '';
+            cards.clear();
+
+            teams.forEach((team) => {
+                const card = document.createElement('team-card');
+                card.setTeam(team);
+                card.addEventListener('team-selected', (e) => selectTeam(e.detail.teamId));
                 teamList.appendChild(card);
+                cards.set(team.id, card);
+            });
+
+            updateCards();
+        }
+
+        function updateCards() {
+            if (!state) return;
+            const currentId = state.team ? state.team.id : null;
+
+            cards.forEach((card, teamId) => {
+                card.setActive(teamId === currentId);
+                if (fullRanking.has(teamId)) card.setRanking(fullRanking.get(teamId));
             });
         }
 
-        // Update team card active states
-        function updateTeamCards() {
-            const cards = teamList.querySelectorAll('team-card');
-            cards.forEach(card => {
-                const teamData = card.getState().teamData;
-                const isActive = currentState && currentState.team && currentState.team.id === teamData.id;
-                card.setActive(isActive);
-            });
+        async function loadRanking() {
+            try {
+                const rows = await window.aeroApi.getRanking();
+                fullRanking = new Map(rows.map((r) => [r.team_id, r]));
+                updateCards();
+            } catch (error) {
+                // Standings are cosmetic here; a miss is retried on the next tick.
+            }
         }
 
-        // Update status display
-        function updateStatusDisplay() {
-            if (!currentState) return;
-
-            const teamData = currentState.team || null;
-            statusIndicator.updateStatus(currentState.visible, teamData);
-        }
-
-        // Update form from state
-        function updateFormFromState() {
-            if (!currentState) return;
-
-            document.getElementById('showTeamInfo').checked = currentState.show_team_info;
-            document.getElementById('showFlightResults').checked = currentState.show_flight_results;
-            document.getElementById('showCurrentBattery').checked = currentState.show_current_battery;
-            document.getElementById('customMessage').value = currentState.custom_message || '';
-        }
-
-        // Select team
         async function selectTeam(teamId) {
+            selectedTeamId = teamId;
+            updateStageControl();
             try {
                 await window.aeroApi.showOverlay(teamId);
-                notificationToast.show('Equipe selecionada com sucesso!', 'success');
-                await loadCurrentState();
+                toast.show('Equipe no ar');
             } catch (error) {
-                notificationToast.show('Erro ao selecionar equipe', 'error');
-                console.error(error);
+                toast.show('Erro ao selecionar equipe', 'error');
             }
         }
 
-        // Control button event handlers
-        controlButtons.addEventListener('show-overlay', async () => {
+        // --- Primary actions ----------------------------------------------
+
+        const actions = {
+            'show-overlay': [() => window.aeroApi.showOverlay(), 'Overlay no ar'],
+            'hide-overlay': [() => window.aeroApi.hideOverlay(), 'Overlay fora do ar'],
+            'toggle-overlay': [() => window.aeroApi.toggleOverlay(), 'Overlay alternado'],
+            'advance-queue': [() => window.aeroApi.advanceQueue(), 'Próxima equipe no ar'],
+            'timer-start': [() => window.aeroApi.startTimer(), 'Cronômetro iniciado'],
+            'timer-pause': [() => window.aeroApi.pauseTimer(), 'Cronômetro pausado'],
+            'timer-reset': [() => window.aeroApi.resetTimer(), 'Cronômetro zerado']
+        };
+
+        Object.entries(actions).forEach(([event, [run, message]]) => {
+            document.addEventListener(event, async () => {
+                try {
+                    await run();
+                    toast.show(message);
+                } catch (error) {
+                    toast.show('Falha ao executar a ação', 'error');
+                }
+            });
+        });
+
+        document.addEventListener('timer-duration', async (event) => {
             try {
-                await window.aeroApi.showOverlay();
-                notificationToast.show('Overlay exibido', 'success');
-                await loadCurrentState();
+                await window.aeroApi.setTimerDuration(event.detail.seconds);
+                toast.show(`Janela ajustada para ${event.detail.seconds / 60} min`);
             } catch (error) {
-                notificationToast.show('Erro ao mostrar overlay', 'error');
-                console.error(error);
+                toast.show('Falha ao ajustar a janela', 'error');
             }
         });
 
-        controlButtons.addEventListener('hide-overlay', async () => {
-            try {
-                await window.aeroApi.hideOverlay();
-                notificationToast.show('Overlay ocultado', 'success');
-                await loadCurrentState();
-            } catch (error) {
-                notificationToast.show('Erro ao ocultar overlay', 'error');
-                console.error(error);
-            }
+        // --- Stage control ---------------------------------------------------
+
+        // Selecting from the board targets the stage controls only; what is on
+        // air stays where the operator put it.
+        stageBoard.addEventListener('team-selected', (event) => {
+            selectedTeamId = event.detail.teamId;
+            updateStageControl();
         });
 
-        controlButtons.addEventListener('toggle-overlay', async () => {
-            try {
-                await window.aeroApi.toggleOverlay();
-                notificationToast.show('Overlay alternado', 'success');
-                await loadCurrentState();
-            } catch (error) {
-                notificationToast.show('Erro ao alternar overlay', 'error');
-                console.error(error);
-            }
+        // The chip's own arrows move the team, and point the stage controls at
+        // it on the way, so the fuller controls follow whoever was just moved.
+        stageBoard.addEventListener('team-stage-step', (event) => {
+            selectedTeamId = event.detail.teamId;
+            updateStageControl();
+            stepFromBoard(event.detail.teamId, event.detail.dir);
         });
 
-        // Apply settings button
-        document.getElementById('applySettings').addEventListener('click', async () => {
-            const newState = {
-                visible: currentState.visible,
-                current_team_id: currentState.team ? currentState.team.id : null,
+        function stepFromBoard(teamId, dir) {
+            const team = teams.find((t) => t.id === teamId);
+            if (!team) return;
+
+            const forward = dir === 'fwd';
+            const target = (forward ? STAGE_FLOW : STAGE_BACK)[team.stage];
+
+            if (!target) {
+                toast.show(
+                    forward
+                        ? 'Bateria encerrada. Use "Iniciar próxima bateria".'
+                        : 'A equipe já está no início do ciclo.',
+                    'error'
+                );
+                return;
+            }
+
+            /*
+             * Validating writes the battery's result, and a chip has nowhere to
+             * type a score. Advancing from here would close the battery worth
+             * nothing and quietly flatten the team in the standings the overlay
+             * is drawing, so this one step stays with the stage control, which
+             * has the score and payload fields. Going back never lands on a
+             * terminal stage, so only the forward arrow needs the guard.
+             */
+            if (forward && TERMINAL_STAGES.includes(target)) {
+                toast.show('Informe a nota no controle de estágio para validar', 'error');
+                return;
+            }
+
+            /*
+             * Forward goes through advance, which enforces the flight line - the
+             * runway is taken from the front of the queue, not from whoever the
+             * operator clicked. Back has no such action on the backend, so it is
+             * a direct jump. Note it undoes the stage, not the recorded result:
+             * a validated flight keeps its score in the standings until the
+             * stage control overwrites it.
+             */
+            const call = forward
+                ? (id, displaced) => window.aeroApi.advanceStage(id, null, null, displaced)
+                : (id, displaced) => window.aeroApi.setStage(id, target, null, null, displaced);
+
+            runStageAction(call, `${team.name}: ${stageLabel(target)}`);
+        }
+
+        // Set while the prompt is open, so the operator's answer can be replayed
+        // into the very action that was refused.
+        let pendingStageAction = null;
+
+        async function runStageAction(action, message, displacedStage = null) {
+            if (!selectedTeamId) return;
+            try {
+                await action(selectedTeamId, displacedStage);
+                await Promise.all([refreshTeams(), loadStageBoard()]);
+                toast.show(message);
+            } catch (error) {
+                // 409 is not a failure but a question: the runway or the air is
+                // taken, and only the operator knows how that team's turn ended.
+                if (error.status === 409 && error.detail) {
+                    pendingStageAction = { action, message };
+                    stagePrompt.ask(error.detail);
+                    return;
+                }
+                // The backend also refuses transitions that make no sense, such
+                // as starting the next battery before this one is judged.
+                toast.show(
+                    typeof error.detail === 'string'
+                        ? error.detail
+                        : 'Transição não permitida agora',
+                    'error'
+                );
+            }
+        }
+
+        stagePrompt.addEventListener('displacement-chosen', (event) => {
+            if (!pendingStageAction) return;
+            const { action, message } = pendingStageAction;
+            pendingStageAction = null;
+            runStageAction(action, message, event.detail.stage);
+        });
+
+        stageControl.addEventListener('stage-advance', (event) => {
+            const { score, payload_kg } = event.detail;
+            runStageAction(
+                (id, displaced) => window.aeroApi.advanceStage(id, score, payload_kg, displaced),
+                'Estágio avançado'
+            );
+        });
+
+        stageControl.addEventListener('stage-set', (event) => {
+            const { stage, score, payload_kg } = event.detail;
+            runStageAction(
+                (id, displaced) => window.aeroApi.setStage(id, stage, score, payload_kg, displaced),
+                'Estágio atualizado'
+            );
+        });
+
+        stageControl.addEventListener('stage-next-battery', () => {
+            runStageAction(
+                (id) => window.aeroApi.nextBattery(id),
+                'Próxima bateria iniciada'
+            );
+        });
+
+        // --- Panel modes ---------------------------------------------------
+
+        document.querySelectorAll('.mode').forEach((button) => {
+            button.addEventListener('click', async () => {
+                try {
+                    await window.aeroApi.setPanel(button.dataset.panel);
+                    updateModeButtons(button.dataset.panel);
+                } catch (error) {
+                    toast.show('Falha ao trocar o painel', 'error');
+                }
+            });
+        });
+
+        function updateModeButtons(panel) {
+            document.querySelectorAll('.mode').forEach((button) => {
+                button.classList.toggle('active', button.dataset.panel === panel);
+            });
+        }
+
+        // --- Overlay settings ----------------------------------------------
+
+        function fillSettings(s) {
+            document.getElementById('showTopBar').checked = s.show_top_bar;
+            document.getElementById('showTeamInfo').checked = s.show_team_info;
+            document.getElementById('showCurrentBattery').checked = s.show_current_battery;
+            document.getElementById('showTakeoffTimer').checked = s.show_takeoff_timer;
+            document.getElementById('customMessage').value = s.custom_message || '';
+        }
+
+        /**
+         * Write the overlay state back, since PUT replaces it wholesale.
+         *
+         * The message is taken from the server state rather than the input, so
+         * flipping a switch never puts a half-typed message on air. The Aplicar
+         * button is the only caller that overrides it.
+         */
+        async function pushOverlayState(fields) {
+            if (!state) return;
+            await window.aeroApi.updateOverlayState({
+                visible: state.visible,
+                current_team_id: state.team ? state.team.id : null,
+                show_top_bar: document.getElementById('showTopBar').checked,
                 show_team_info: document.getElementById('showTeamInfo').checked,
-                show_flight_results: document.getElementById('showFlightResults').checked,
                 show_current_battery: document.getElementById('showCurrentBattery').checked,
-                custom_message: document.getElementById('customMessage').value || null
-            };
+                show_takeoff_timer: document.getElementById('showTakeoffTimer').checked,
+                panel: state.panel,
+                custom_message: state.custom_message,
+                ...fields
+            });
+        }
 
+        // Switches take effect on the click. No toast: the overlay itself is the
+        // feedback, and four switches would mean four toasts.
+        ['showTopBar', 'showTeamInfo', 'showCurrentBattery', 'showTakeoffTimer']
+            .forEach((id) => {
+                document.getElementById(id).addEventListener('change', async () => {
+                    try {
+                        await pushOverlayState({});
+                    } catch (error) {
+                        // Never leave the switch claiming something the overlay
+                        // is not doing.
+                        fillSettings(state);
+                        toast.show('Erro ao aplicar o elemento', 'error');
+                    }
+                });
+            });
+
+        document.getElementById('applySettings').addEventListener('click', async () => {
             try {
-                await window.aeroApi.updateOverlayState(newState);
-                notificationToast.show('Configurações aplicadas', 'success');
-                await loadCurrentState();
+                await pushOverlayState({
+                    custom_message: document.getElementById('customMessage').value || null
+                });
+                toast.show('Mensagem aplicada');
             } catch (error) {
-                notificationToast.show('Erro ao aplicar configurações', 'error');
-                console.error(error);
+                toast.show('Erro ao aplicar a mensagem', 'error');
             }
         });
 
-        // Initialize on load
-        init();
+        // --- Field conditions ------------------------------------------------
 
-        console.log('Aero Design Control Panel - Web Components loaded');
+        function fillConditions(conditions) {
+            if (!conditions) return;
+            document.getElementById('temperature').value = conditions.temperature_c;
+            document.getElementById('humidity').value = conditions.humidity_pct;
+            document.getElementById('qnh').value = conditions.qnh_hpa;
+            document.getElementById('elevation').value = conditions.field_elevation_m;
+            document.getElementById('windSpeed').value = conditions.wind_speed_kmh;
+            document.getElementById('windDir').value = conditions.wind_direction_deg;
+            document.getElementById('condition').value = conditions.condition;
+        }
+
+        function fillDerived(conditions) {
+            if (!conditions || !conditions.derived) return;
+            const d = conditions.derived;
+            document.getElementById('dDa').textContent = d.density_altitude_m;
+            document.getElementById('dRho').textContent = d.air_density_kg_m3;
+            document.getElementById('dRel').textContent = d.relative_density_pct;
+            document.getElementById('dDew').textContent = d.dew_point_c;
+        }
+
+        document.getElementById('applyConditions').addEventListener('click', async () => {
+            const current = state ? state.conditions : {};
+            try {
+                await window.aeroApi.updateConditions({
+                    field_name: current.field_name,
+                    field_elevation_m: parseFloat(document.getElementById('elevation').value),
+                    temperature_c: parseFloat(document.getElementById('temperature').value),
+                    humidity_pct: parseFloat(document.getElementById('humidity').value),
+                    qnh_hpa: parseFloat(document.getElementById('qnh').value),
+                    wind_speed_kmh: parseFloat(document.getElementById('windSpeed').value),
+                    wind_direction_deg: parseInt(document.getElementById('windDir').value, 10),
+                    condition: document.getElementById('condition').value,
+                    forecast: current.forecast || []
+                });
+                toast.show('Condições atualizadas');
+            } catch (error) {
+                toast.show('Erro ao atualizar condições', 'error');
+            }
+        });
+
+        loadTeams();
+        loadRanking();
+        loadStageBoard();
+
+        setInterval(loadRanking, 3000);
+        // Stages move by hand, so a slower tick is plenty; every local action
+        // refreshes these immediately anyway.
+        setInterval(refreshTeams, 2500);
+        setInterval(loadStageBoard, 2500);
+
+        console.log('AeroDesign Control Panel ready');
     </script>
 </body>
 </html>

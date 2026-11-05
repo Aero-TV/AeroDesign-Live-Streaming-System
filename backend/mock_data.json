@@ -11,21 +11,27 @@
           "battery_number": 1,
           "status": "validated",
           "score": 67.3,
-          "notes": null
+          "notes": null,
+          "payload_kg": 7.4
         },
         {
           "battery_number": 2,
           "status": "invalidated",
           "score": null,
-          "notes": null
+          "notes": null,
+          "payload_kg": null
         },
         {
           "battery_number": 3,
           "status": "validated",
           "score": 82.5,
-          "notes": null
+          "notes": null,
+          "payload_kg": 9.07
         }
-      ]
+      ],
+      "stage": "waiting",
+      "stage_changed_at": null,
+      "queue_position": null
     },
     {
       "id": "team002",
@@ -38,21 +44,27 @@
           "battery_number": 1,
           "status": "validated",
           "score": 55.8,
-          "notes": null
+          "notes": null,
+          "payload_kg": 6.14
         },
         {
           "battery_number": 2,
           "status": "validated",
           "score": 71.2,
-          "notes": null
+          "notes": null,
+          "payload_kg": 7.83
         },
         {
           "battery_number": 3,
           "status": "validated",
           "score": 78.9,
-          "notes": null
+          "notes": null,
+          "payload_kg": 8.68
         }
-      ]
+      ],
+      "stage": "called_for_inspection",
+      "stage_changed_at": null,
+      "queue_position": null
     },
     {
       "id": "team003",
@@ -65,21 +77,27 @@
           "battery_number": 1,
           "status": "invalidated",
           "score": null,
-          "notes": null
+          "notes": null,
+          "payload_kg": null
         },
         {
           "battery_number": 2,
           "status": "validated",
           "score": 64.7,
-          "notes": null
+          "notes": null,
+          "payload_kg": 7.12
         },
         {
           "battery_number": 3,
           "status": "validated",
           "score": 88.3,
-          "notes": null
+          "notes": null,
+          "payload_kg": 9.71
         }
-      ]
+      ],
+      "stage": "inspecting",
+      "stage_changed_at": null,
+      "queue_position": null
     },
     {
       "id": "team004",
@@ -92,75 +110,27 @@
           "battery_number": 1,
           "status": "validated",
           "score": 72.1,
-          "notes": null
+          "notes": null,
+          "payload_kg": 7.93
         },
         {
           "battery_number": 2,
           "status": "validated",
           "score": 79.5,
-          "notes": null
+          "notes": null,
+          "payload_kg": 8.74
         },
         {
           "battery_number": 3,
           "status": "invalidated",
           "score": null,
-          "notes": null
+          "notes": null,
+          "payload_kg": null
         }
-      ]
-    },
-    {
-      "id": "team005",
-      "name": "AeroFEG",
-      "university": "Faculdade de Engenharia de Guaratinguetá - UNESP",
-      "aircraft_photo_url": "assets/plane-photos/default.jpg",
-      "current_battery": 4,
-      "flight_results": [
-        {
-          "battery_number": 1,
-          "status": "validated",
-          "score": 61.4,
-          "notes": null
-        },
-        {
-          "battery_number": 2,
-          "status": "invalidated",
-          "score": null,
-          "notes": null
-        },
-        {
-          "battery_number": 3,
-          "status": "validated",
-          "score": 75.8,
-          "notes": null
-        }
-      ]
-    },
-    {
-      "id": "team006",
-      "name": "Keep Flying",
-      "university": "Escola Politécnica - USP",
-      "aircraft_photo_url": "assets/plane-photos/default.jpg",
-      "current_battery": 4,
-      "flight_results": [
-        {
-          "battery_number": 1,
-          "status": "validated",
-          "score": 69.2,
-          "notes": null
-        },
-        {
-          "battery_number": 2,
-          "status": "validated",
-          "score": 74.6,
-          "notes": null
-        },
-        {
-          "battery_number": 3,
-          "status": "validated",
-          "score": 91.3,
-          "notes": null
-        }
-      ]
+      ],
+      "stage": "waiting",
+      "stage_changed_at": null,
+      "queue_position": null
     },
     {
       "id": "team007",
@@ -173,21 +143,93 @@
           "battery_number": 1,
           "status": "validated",
           "score": 58.9,
-          "notes": null
+          "notes": null,
+          "payload_kg": 6.48
         },
         {
           "battery_number": 2,
           "status": "validated",
           "score": 68.4,
-          "notes": null
+          "notes": null,
+          "payload_kg": 7.52
         },
         {
           "battery_number": 3,
           "status": "validated",
           "score": 83.7,
-          "notes": null
+          "notes": null,
+          "payload_kg": 9.21
         }
-      ]
+      ],
+      "stage": "flight_queue",
+      "stage_changed_at": null,
+      "queue_position": null
+    },
+    {
+      "id": "team006",
+      "name": "Keep Flying",
+      "university": "Escola Politécnica - USP",
+      "aircraft_photo_url": "assets/plane-photos/default.jpg",
+      "current_battery": 4,
+      "flight_results": [
+        {
+          "battery_number": 1,
+          "status": "validated",
+          "score": 69.2,
+          "notes": null,
+          "payload_kg": 7.61
+        },
+        {
+          "battery_number": 2,
+          "status": "validated",
+          "score": 74.6,
+          "notes": null,
+          "payload_kg": 8.21
+        },
+        {
+          "battery_number": 3,
+          "status": "validated",
+          "score": 91.3,
+          "notes": null,
+          "payload_kg": 10.04
+        }
+      ],
+      "stage": "waiting",
+      "stage_changed_at": null,
+      "queue_position": null
+    },
+    {
+      "id": "team005",
+      "name": "AeroFEG",
+      "university": "Faculdade de Engenharia de Guaratinguetá - UNESP",
+      "aircraft_photo_url": "assets/plane-photos/default.jpg",
+      "current_battery": 4,
+      "flight_results": [
+        {
+          "battery_number": 1,
+          "status": "validated",
+          "score": 61.4,
+          "notes": null,
+          "payload_kg": 6.75
+        },
+        {
+          "battery_number": 2,
+          "status": "invalidated",
+          "score": null,
+          "notes": null,
+          "payload_kg": null
+        },
+        {
+          "battery_number": 3,
+          "status": "validated",
+          "score": 75.8,
+          "notes": null,
+          "payload_kg": 8.34
+        }
+      ],
+      "stage": "flight_queue",
+      "stage_changed_at": null,
+      "queue_position": null
     },
     {
       "id": "team008",
@@ -200,21 +242,27 @@
           "battery_number": 1,
           "status": "invalidated",
           "score": null,
-          "notes": null
+          "notes": null,
+          "payload_kg": null
         },
         {
           "battery_number": 2,
           "status": "validated",
           "score": 62.1,
-          "notes": null
+          "notes": null,
+          "payload_kg": 6.83
         },
         {
           "battery_number": 3,
           "status": "validated",
           "score": 76.5,
-          "notes": null
+          "notes": null,
+          "payload_kg": 8.42
         }
-      ]
+      ],
+      "stage": "waiting",
+      "stage_changed_at": null,
+      "queue_position": null
     },
     {
       "id": "team009",
@@ -227,21 +275,34 @@
           "battery_number": 1,
           "status": "validated",
           "score": 64.3,
-          "notes": null
+          "notes": null,
+          "payload_kg": 7.07
         },
         {
           "battery_number": 2,
           "status": "validated",
           "score": 70.8,
-          "notes": null
+          "notes": null,
+          "payload_kg": 7.79
         },
         {
           "battery_number": 3,
           "status": "invalidated",
           "score": null,
+          "notes": null,
+          "payload_kg": null
+        },
+        {
+          "battery_number": 4,
+          "status": "validated",
+          "score": 76.2,
+          "payload_kg": 8.38,
           "notes": null
         }
-      ]
+      ],
+      "stage": "validated",
+      "stage_changed_at": null,
+      "queue_position": null
     },
     {
       "id": "team010",
@@ -254,21 +315,27 @@
           "battery_number": 1,
           "status": "validated",
           "score": 56.7,
-          "notes": null
+          "notes": null,
+          "payload_kg": 6.24
         },
         {
           "battery_number": 2,
           "status": "validated",
           "score": 73.2,
-          "notes": null
+          "notes": null,
+          "payload_kg": 8.05
         },
         {
           "battery_number": 3,
           "status": "validated",
           "score": 85.1,
-          "notes": null
+          "notes": null,
+          "payload_kg": 9.36
         }
-      ]
+      ],
+      "stage": "flight_queue",
+      "stage_changed_at": null,
+      "queue_position": null
     },
     {
       "id": "team011",
@@ -281,21 +348,27 @@
           "battery_number": 1,
           "status": "validated",
           "score": 60.5,
-          "notes": null
+          "notes": null,
+          "payload_kg": 6.66
         },
         {
           "battery_number": 2,
           "status": "invalidated",
           "score": null,
-          "notes": null
+          "notes": null,
+          "payload_kg": null
         },
         {
           "battery_number": 3,
           "status": "validated",
           "score": 77.9,
-          "notes": null
+          "notes": null,
+          "payload_kg": 8.57
         }
-      ]
+      ],
+      "stage": "waiting",
+      "stage_changed_at": null,
+      "queue_position": null
     },
     {
       "id": "team012",
@@ -308,21 +381,27 @@
           "battery_number": 1,
           "status": "invalidated",
           "score": null,
-          "notes": null
+          "notes": null,
+          "payload_kg": null
         },
         {
           "battery_number": 2,
           "status": "validated",
           "score": 66.8,
-          "notes": null
+          "notes": null,
+          "payload_kg": 7.35
         },
         {
           "battery_number": 3,
           "status": "validated",
           "score": 80.2,
-          "notes": null
+          "notes": null,
+          "payload_kg": 8.82
         }
-      ]
+      ],
+      "stage": "awaiting_result",
+      "stage_changed_at": null,
+      "queue_position": null
     },
     {
       "id": "team013",
@@ -335,21 +414,27 @@
           "battery_number": 1,
           "status": "validated",
           "score": 63.2,
-          "notes": null
+          "notes": null,
+          "payload_kg": 6.95
         },
         {
           "battery_number": 2,
           "status": "validated",
           "score": 69.7,
-          "notes": null
+          "notes": null,
+          "payload_kg": 7.67
         },
         {
           "battery_number": 3,
           "status": "validated",
           "score": 84.6,
-          "notes": null
+          "notes": null,
+          "payload_kg": 9.31
         }
-      ]
+      ],
+      "stage": "waiting",
+      "stage_changed_at": null,
+      "queue_position": null
     },
     {
       "id": "team014",
@@ -362,21 +447,34 @@
           "battery_number": 1,
           "status": "validated",
           "score": 70.8,
-          "notes": null
+          "notes": null,
+          "payload_kg": 7.79
         },
         {
           "battery_number": 2,
           "status": "validated",
           "score": 76.3,
-          "notes": null
+          "notes": null,
+          "payload_kg": 8.39
         },
         {
           "battery_number": 3,
           "status": "invalidated",
           "score": null,
+          "notes": null,
+          "payload_kg": null
+        },
+        {
+          "battery_number": 4,
+          "status": "invalidated",
+          "score": null,
+          "payload_kg": null,
           "notes": null
         }
-      ]
+      ],
+      "stage": "invalidated",
+      "stage_changed_at": null,
+      "queue_position": null
     },
     {
       "id": "team015",
@@ -389,21 +487,27 @@
           "battery_number": 1,
           "status": "validated",
           "score": 59.4,
-          "notes": null
+          "notes": null,
+          "payload_kg": 6.53
         },
         {
           "battery_number": 2,
           "status": "validated",
           "score": 72.9,
-          "notes": null
+          "notes": null,
+          "payload_kg": 8.02
         },
         {
           "battery_number": 3,
           "status": "validated",
           "score": 87.2,
-          "notes": null
+          "notes": null,
+          "payload_kg": 9.59
         }
-      ]
+      ],
+      "stage": "waiting",
+      "stage_changed_at": null,
+      "queue_position": null
     },
     {
       "id": "team016",
@@ -416,21 +520,27 @@
           "battery_number": 1,
           "status": "invalidated",
           "score": null,
-          "notes": null
+          "notes": null,
+          "payload_kg": null
         },
         {
           "battery_number": 2,
           "status": "validated",
           "score": 65.3,
-          "notes": null
+          "notes": null,
+          "payload_kg": 7.18
         },
         {
           "battery_number": 3,
           "status": "validated",
           "score": 79.8,
-          "notes": null
+          "notes": null,
+          "payload_kg": 8.78
         }
-      ]
+      ],
+      "stage": "flying",
+      "stage_changed_at": null,
+      "queue_position": null
     },
     {
       "id": "team017",
@@ -443,21 +553,27 @@
           "battery_number": 1,
           "status": "validated",
           "score": 62.7,
-          "notes": null
+          "notes": null,
+          "payload_kg": 6.9
         },
         {
           "battery_number": 2,
           "status": "validated",
           "score": 68.1,
-          "notes": null
+          "notes": null,
+          "payload_kg": 7.49
         },
         {
           "battery_number": 3,
           "status": "validated",
           "score": 81.4,
-          "notes": null
+          "notes": null,
+          "payload_kg": 8.95
         }
-      ]
+      ],
+      "stage": "waiting",
+      "stage_changed_at": null,
+      "queue_position": null
     },
     {
       "id": "team018",
@@ -470,21 +586,27 @@
           "battery_number": 1,
           "status": "validated",
           "score": 57.9,
-          "notes": null
+          "notes": null,
+          "payload_kg": 6.37
         },
         {
           "battery_number": 2,
           "status": "invalidated",
           "score": null,
-          "notes": null
+          "notes": null,
+          "payload_kg": null
         },
         {
           "battery_number": 3,
           "status": "validated",
           "score": 74.3,
-          "notes": null
+          "notes": null,
+          "payload_kg": 8.17
         }
-      ]
+      ],
+      "stage": "waiting",
+      "stage_changed_at": null,
+      "queue_position": null
     },
     {
       "id": "team019",
@@ -497,21 +619,27 @@
           "battery_number": 1,
           "status": "validated",
           "score": 66.5,
-          "notes": null
+          "notes": null,
+          "payload_kg": 7.32
         },
         {
           "battery_number": 2,
           "status": "validated",
           "score": 75.8,
-          "notes": null
+          "notes": null,
+          "payload_kg": 8.34
         },
         {
           "battery_number": 3,
           "status": "validated",
           "score": 89.7,
-          "notes": null
+          "notes": null,
+          "payload_kg": 9.87
         }
-      ]
+      ],
+      "stage": "waiting",
+      "stage_changed_at": null,
+      "queue_position": null
     },
     {
       "id": "team020",
@@ -524,21 +652,165 @@
           "battery_number": 1,
           "status": "invalidated",
           "score": null,
-          "notes": null
+          "notes": null,
+          "payload_kg": null
         },
         {
           "battery_number": 2,
           "status": "validated",
           "score": 63.4,
-          "notes": null
+          "notes": null,
+          "payload_kg": 6.97
         },
         {
           "battery_number": 3,
           "status": "validated",
           "score": 78.6,
-          "notes": null
+          "notes": null,
+          "payload_kg": 8.65
         }
-      ]
+      ],
+      "stage": "waiting",
+      "stage_changed_at": null,
+      "queue_position": null
+    }
+  ],
+  "conditions": {
+    "field_name": "Campo de Voo - São José dos Campos",
+    "field_elevation_m": 660.0,
+    "temperature_c": 29.4,
+    "humidity_pct": 58.0,
+    "qnh_hpa": 1012.0,
+    "wind_speed_kmh": 14.0,
+    "wind_direction_deg": 110,
+    "condition": "partly_cloudy",
+    "forecast": [
+      {
+        "label": "12h",
+        "condition": "clear",
+        "temperature_c": 31.0,
+        "precip_chance_pct": 5
+      },
+      {
+        "label": "14h",
+        "condition": "partly_cloudy",
+        "temperature_c": 32.5,
+        "precip_chance_pct": 15
+      },
+      {
+        "label": "16h",
+        "condition": "cloudy",
+        "temperature_c": 30.0,
+        "precip_chance_pct": 40
+      },
+      {
+        "label": "18h",
+        "condition": "rain",
+        "temperature_c": 26.5,
+        "precip_chance_pct": 70
+      }
+    ]
+  },
+  "queue": [
+    {
+      "team_id": "team001",
+      "battery_number": 4,
+      "scheduled_time": "09:00"
+    },
+    {
+      "team_id": "team002",
+      "battery_number": 4,
+      "scheduled_time": "09:08"
+    },
+    {
+      "team_id": "team003",
+      "battery_number": 4,
+      "scheduled_time": "09:16"
+    },
+    {
+      "team_id": "team004",
+      "battery_number": 4,
+      "scheduled_time": "09:24"
+    },
+    {
+      "team_id": "team005",
+      "battery_number": 4,
+      "scheduled_time": "09:32"
+    },
+    {
+      "team_id": "team006",
+      "battery_number": 4,
+      "scheduled_time": "09:40"
+    },
+    {
+      "team_id": "team007",
+      "battery_number": 4,
+      "scheduled_time": "09:48"
+    },
+    {
+      "team_id": "team008",
+      "battery_number": 4,
+      "scheduled_time": "09:56"
+    },
+    {
+      "team_id": "team009",
+      "battery_number": 4,
+      "scheduled_time": "10:04"
+    },
+    {
+      "team_id": "team010",
+      "battery_number": 4,
+      "scheduled_time": "10:12"
+    },
+    {
+      "team_id": "team011",
+      "battery_number": 4,
+      "scheduled_time": "10:20"
+    },
+    {
+      "team_id": "team012",
+      "battery_number": 4,
+      "scheduled_time": "10:28"
+    },
+    {
+      "team_id": "team013",
+      "battery_number": 4,
+      "scheduled_time": "10:36"
+    },
+    {
+      "team_id": "team014",
+      "battery_number": 4,
+      "scheduled_time": "10:44"
+    },
+    {
+      "team_id": "team015",
+      "battery_number": 4,
+      "scheduled_time": "10:52"
+    },
+    {
+      "team_id": "team016",
+      "battery_number": 4,
+      "scheduled_time": "11:00"
+    },
+    {
+      "team_id": "team017",
+      "battery_number": 4,
+      "scheduled_time": "11:08"
+    },
+    {
+      "team_id": "team018",
+      "battery_number": 4,
+      "scheduled_time": "11:16"
+    },
+    {
+      "team_id": "team019",
+      "battery_number": 4,
+      "scheduled_time": "11:24"
+    },
+    {
+      "team_id": "team020",
+      "battery_number": 4,
+      "scheduled_time": "11:32"
     }
   ]
 }

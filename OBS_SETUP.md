@@ -33,7 +33,7 @@ In the **Sources** panel (bottom of OBS):
 
 1. Click the **[+]** button
 2. Select **"Browser"** from the list
-3. Name it: `Aero Design Overlay`
+3. Name it: `AeroDesign Overlay`
 4. Click **OK**
 
 ### 4. Configure Browser Source
@@ -77,7 +77,7 @@ The overlay is designed to work at 1920x1080 resolution and shouldn't need repos
 In the **Sources** list, make sure your sources are ordered like this (top to bottom):
 
 ```
-🔵 Aero Design Overlay    ← Top (overlay on top)
+🔵 AeroDesign Overlay     ← Top (overlay on top)
 🎥 Camera/Video Source     ← Middle
 🖼️  Background/Scene       ← Bottom (if any)
 ```
@@ -145,7 +145,7 @@ To control the overlay from another device (tablet, phone):
 ### Multiple Scenes
 
 You can add the same browser source to multiple scenes:
-- Right-click the source → **Add Existing** → Select "Aero Design Overlay"
+- Right-click the source → **Add Existing** → Select "AeroDesign Overlay"
 - This reuses the same source across scenes
 
 ### Keyboard Shortcuts
@@ -190,7 +190,7 @@ Always have a backup:
 
 ```
 Scene: "Competition Stream"
-├── 🔵 Aero Design Overlay (Browser)
+├── 🔵 AeroDesign Overlay (Browser)
 ├── 🎥 Competition Camera (Video Capture Device)
 ├── 🎤 Microphone (Audio Input Capture)
 └── 🖼️  Background Image (optional)

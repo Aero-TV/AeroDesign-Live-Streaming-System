@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Quick start script for the Aero Design Overlay System
+Quick start script for the AeroDesign Overlay System
 Starts the backend server
 """
 
@@ -11,7 +11,7 @@ import time
 from pathlib import Path
 
 def main():
-    print("🛩️  Starting Aero Design Overlay System...")
+    print("🛩️  Starting AeroDesign Overlay System...")
     print("=" * 50)
 
     # Get the backend directory

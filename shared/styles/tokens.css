@@ -1,0 +1,66 @@
+/**
+ * Design tokens for the AeroTV broadcast look.
+ *
+ * These live on :root in the light DOM. CSS custom properties inherit through
+ * shadow boundaries, so every component reads the same palette without having
+ * to import anything.
+ *
+ * The fonts load from Google Fonts when the field has connectivity and fall
+ * back to a system stack when it does not - the layout is sized so nothing
+ * breaks either way.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  /* --- Typography ------------------------------------------------------- */
+  --font-display: 'Barlow Condensed', 'Oswald', 'Segoe UI Semibold', Impact, sans-serif;
+  --font-body: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+
+  /* --- Surfaces --------------------------------------------------------- */
+  /* Panels sit over live video, so they are translucent and blurred rather
+     than solid: the aircraft stays readable behind them. */
+  --surface: rgba(10, 15, 26, 0.82);
+  --surface-strong: rgba(8, 12, 22, 0.94);
+  --surface-soft: rgba(22, 30, 46, 0.72);
+  --surface-line: rgba(148, 175, 214, 0.16);
+  --blur: 18px;
+
+  /* --- Text ------------------------------------------------------------- */
+  --text: #F5F8FC;
+  --text-muted: #97A8C0;
+  --text-dim: #64748B;
+
+  /* --- Accent ----------------------------------------------------------- */
+  --accent: #22D3EE;
+  --accent-deep: #2E7FF0;
+  --accent-gradient: linear-gradient(100deg, #22D3EE 0%, #2E7FF0 100%);
+  --accent-glow: rgba(34, 211, 238, 0.45);
+
+  /* --- Status ----------------------------------------------------------- */
+  --ok: #34D399;
+  --ok-glow: rgba(52, 211, 153, 0.35);
+  --bad: #F87171;
+  --bad-glow: rgba(248, 113, 113, 0.35);
+  --warn: #FBBF24;
+  --warn-glow: rgba(251, 191, 36, 0.4);
+  --neutral: #64748B;
+
+  /* --- Elevation -------------------------------------------------------- */
+  --shadow: 0 18px 48px rgba(0, 0, 0, 0.55);
+  --shadow-tight: 0 6px 18px rgba(0, 0, 0, 0.4);
+
+  /* --- Geometry --------------------------------------------------------- */
+  --radius: 14px;
+  --radius-sm: 8px;
+  --edge: 3px;
+
+  /* --- Motion ----------------------------------------------------------- */
+  /* One easing curve everywhere: a soft overshoot that reads as "settled into
+     place" rather than "snapped". */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --enter: 620ms;
+  --exit: 420ms;
+}

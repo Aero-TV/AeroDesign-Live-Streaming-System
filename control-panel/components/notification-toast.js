@@ -1,85 +1,92 @@
+import BaseComponent from '../../shared/components/base-component.js';
+import { THEME } from '../../shared/styles/theme.js';
+
+/** Transient confirmation of an operator action. */
 class NotificationToast extends BaseComponent {
-  template() {
-    const { visible, message, type } = this._state;
-
-    return `
-      <div class="notification ${type} ${visible ? 'visible' : ''}">
-        ${message}
-      </div>
-    `;
-  }
-
   constructor() {
     super();
-    this.setState({
-      visible: false,
-      message: '',
-      type: 'success'
-    });
-    this.hideTimeout = null;
+    this._state = { message: '', type: 'success', visible: false };
+    this._hideTimer = null;
   }
 
   connectedCallback() {
     this.render();
-    window.showNotification = (message, type) => this.show(message, type);
-  }
-
-  show(message, type = 'success', duration = 3000) {
-    if (this.hideTimeout) {
-      clearTimeout(this.hideTimeout);
-    }
-
-    this.setState({
-      visible: true,
-      message,
-      type
-    });
-
-    this.hideTimeout = setTimeout(() => {
-      this.hide();
-    }, duration);
-  }
-
-  hide() {
-    this.setState({ visible: false });
   }
 
   styles() {
     return `
+      ${THEME}
+
       :host {
-        display: block;
-      }
-
-      .notification {
         position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 15px 20px;
-        border-radius: 8px;
-        color: white;
-        font-weight: 600;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        right: 26px;
+        bottom: 26px;
+        z-index: 5000;
+        pointer-events: none;
+      }
+
+      .toast {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 20px;
+        border-radius: var(--radius);
+        background: var(--surface-strong);
+        border: 1px solid var(--surface-line);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(var(--blur));
+        font-size: 14px;
+        font-weight: 500;
         opacity: 0;
-        transform: translateX(100%);
-        transition: all 0.3s;
-        z-index: 1000;
-        min-width: 200px;
+        transform: translateY(16px) scale(0.97);
+        transition:
+          opacity var(--exit) var(--ease-in),
+          transform var(--exit) var(--ease-in);
       }
 
-      .notification.visible {
+      .toast.show {
         opacity: 1;
-        transform: translateX(0);
+        transform: translateY(0) scale(1);
+        transition:
+          opacity 380ms var(--ease-out),
+          transform 380ms var(--ease-out);
       }
 
-      .notification.success {
-        background: #00cc66;
+      .toast::before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex: none;
       }
 
-      .notification.error {
-        background: #ff4757;
-      }
+      .toast.success::before { background: var(--ok); box-shadow: 0 0 12px var(--ok-glow); }
+      .toast.error::before   { background: var(--bad); box-shadow: 0 0 12px var(--bad-glow); }
+      .toast.info::before    { background: var(--accent); box-shadow: 0 0 12px var(--accent-glow); }
+
+      .toast.error { border-color: rgba(248, 113, 113, 0.4); }
     `;
+  }
+
+  template() {
+    return `<div class="toast" id="toast"><span id="message"></span></div>`;
+  }
+
+  update() {
+    const { message, type, visible } = this._state;
+    const toast = this.$('#toast');
+    if (!toast) return;
+
+    this.setText('#message', message);
+    toast.className = `toast ${type}${visible ? ' show' : ''}`;
+  }
+
+  show(message, type = 'success', duration = 2600) {
+    if (this._hideTimer) clearTimeout(this._hideTimer);
+    this.setState({ message, type, visible: true });
+    this._hideTimer = setTimeout(() => this.setState({ visible: false }), duration);
   }
 }
 
 customElements.define('notification-toast', NotificationToast);
+export default NotificationToast;
