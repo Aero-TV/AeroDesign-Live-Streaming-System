@@ -1,5 +1,8 @@
 # AeroDesign - Live Transmission Overlay System
 
+> [!NOTE]
+> **Archived.** This was the initial proposed version of the AeroTV broadcast overlay system, but it ended up not being used in the live broadcasts. It is kept here for reference only.
+
 A complete live broadcast overlay system designed for the brazilian AeroDesign competitions, allowing you to display dynamic information over your video stream in OBS.
 
 ## 🎯 Features
